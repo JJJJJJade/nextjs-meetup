@@ -37,8 +37,11 @@ const HomePage = (props) => {
     </Layout>
 }
 
-export async function getStaticProps() {
+export async function getStaticProps(context) {
     // fetch data from an API
+
+
+
     return {
         props:{
             meetups:DUMMY_MEETUPS
@@ -50,5 +53,16 @@ export async function getStaticProps() {
         revalidate: 10
     }
 }
+
+// export async function getServerSideProps(context) {
+//
+//     const req = context.req
+//     const res = context.res
+//
+//     // fetch data from an API
+//     return {
+//         props: DUMMY_MEETUPS
+//     }
+// }
 
 export default HomePage
