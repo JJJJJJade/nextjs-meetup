@@ -1,7 +1,7 @@
 import MeetupList from "../components/meetups/MeetupList";
 import Layout from "../components/layout/Layout";
 import {useEffect, useState} from "react";
-
+import {MongoClient} from "mongodb";
 
 const DUMMY_MEETUPS = [
     {
@@ -40,12 +40,25 @@ const HomePage = (props) => {
 export async function getStaticProps(context) {
     // fetch data from an API
 
+    const client = await MongoClient.connect('mongodb+srv://JadeTest:passward@cluster0.mxpzd.mongodb.net/?retryWrites=true&w=majority')
+    const db = client.db()
+    const meetupsCollection = db.collection('meetups')
+    const meetups = await meetupsCollection.find().toArray()
 
-
+    // console.log(meetups)
+    client.close()
     return {
-        props:{
-            meetups:DUMMY_MEETUPS
+        props: {
+            meetups: meetups.map(meetup=>{
+                const data = JSON.parse(meetup.data)
+                return {
+                title: data.title,
+                image: data.image,
+                address:data.address,
+                id:meetup._id.toString()
+            }})
         },
+
         // 10 = number of seconds that NextJS will wait until it regenerates this page
         //      for an incoming request.
         //    = this page will not just be generated during the build process
